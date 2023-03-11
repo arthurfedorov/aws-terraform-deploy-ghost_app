@@ -211,11 +211,31 @@ resource "aws_route_table_association" "private_c" {
   route_table_id = aws_route_table.private_rt.id
 }
 
+# Create VPC endpoint security group
+resource "aws_security_group" "vpc_endpoint" {
+  name = "vpc_endpoint"
+  vpc_id = aws_vpc.cloudx.id
+
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["10.10.0.0/16"]
+  }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # Create security group for bastion
 resource "aws_security_group" "bastion" {
   name_prefix = "bastion"
   description = "allows access to bastion"
-  vpc_id = aws_vpc.cloudx.id 
+  vpc_id = aws_vpc.cloudx.id
 }
 
 # Add ingress and egress rules to the bastion security group
@@ -514,13 +534,12 @@ resource "aws_iam_policy" "ghost_ecs_policy" {
     Statement = [
       {
         Action = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "elasticfilesystem:DescribeFileSystems",
-          "elasticfilesystem:ClientMount",
-          "elasticfilesystem:ClientWrite"
+          "ecr:*",
+          "logs:*",
+          "ecs:*",
+          "ssm:*",
+          "ssmmessages:*",
+          "elasticfilesystem"
         ]
         Effect   = "Allow"
         Resource = "*"

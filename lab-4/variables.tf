@@ -1,5 +1,6 @@
 variable "your_ip" {
   type = string
+  default = "212.58.114.20/32"
   description = "IP address in CIDR notation (/32)"
 
   validation {
