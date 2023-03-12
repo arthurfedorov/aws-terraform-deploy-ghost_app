@@ -25,7 +25,3 @@ output "aws_region" {
 output "aws_account_id" {
   value = data.aws_caller_identity.current.account_id
 }
-
-output "database_url" {
-  value = aws_db_instance.ghost.address
-}
