@@ -3,6 +3,9 @@
 	"name": "ghost_container",
 	"image": "${aws_account_id}.dkr.ecr.${aws_region}.amazonaws.com/ghost:4.12.1",
 	"essential": true,
+	"linuxParameters": {
+        "initProcessEnabled": true
+	},
 	"environment": [{
 			"name": "database__client",
 			"value": "mysql"

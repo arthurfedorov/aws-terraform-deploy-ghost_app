@@ -744,19 +744,6 @@ resource "aws_ecs_cluster" "ghost" {
   }
 }
 
-# data "template_file" "container_definitions" {
-#   template = file("./container-definition.json.tpl")
-
-#   vars = {
-#     DB_NAME = "${aws_db_instance.ghost.db_name}"
-#     DB_USER = "${aws_db_instance.ghost.username}"
-#     DB_URL = "${aws_db_instance.ghost.address}"
-#     DB_PASSWORD = "${aws_ssm_parameter.ghost_db_password.value}"
-#     aws_account_id = "${data.aws_caller_identity.current.account_id}"
-#     aws_region = "${data.aws_region.current.name}"
-#   }
-# }
-
 # # Create task definition
 # resource "aws_ecs_task_definition" "task_def_ghost" {
 #   family = "task_def_ghost"
@@ -770,7 +757,14 @@ resource "aws_ecs_cluster" "ghost" {
 #       file_system_id = aws_efs_file_system.ghost_content.id
 #     }
 #   }
-#   container_definitions = data.template_file.container_definitions.rendered
+#   container_definitions = templatefile("./user_data.sh.tpl", {
+  #   DB_NAME = "${aws_db_instance.ghost.db_name}"
+#     DB_USER = "${aws_db_instance.ghost.username}"
+#     DB_URL = "${aws_db_instance.ghost.address}"
+#     DB_PASSWORD = "${aws_ssm_parameter.ghost_db_password.value}"
+#     aws_account_id = "${data.aws_caller_identity.current.account_id}"
+#     aws_region = "${data.aws_region.current.name}"
+#    }
 # }
 
 # resource "aws_ecs_service" "ghost" {
@@ -787,7 +781,5 @@ resource "aws_ecs_cluster" "ghost" {
 #       aws_subnet.private_c.id
 #     ]
 #     security_groups = [aws_security_group.fargate_pool.id]
-
 #   }
-
 # }
