@@ -845,6 +845,7 @@ resource "aws_ecs_service" "ghost" {
   }
 
   depends_on = [
-    aws_ecs_task_definition.task_def_ghost
+    aws_ecs_task_definition.task_def_ghost,
+    aws_db_instance.ghost
   ]
 }
